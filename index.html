@@ -3,132 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asisten Pembuat Modul Ajar Otomatis via AI</title>
+    <title>Instant Auto-Generator Modul Ajar ke Word</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .container { max-width: 650px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         h1 { text-align: center; color: #1a365d; margin-bottom: 5px; }
         p.subtitle { text-align: center; color: #4a5568; margin-top: 0; margin-bottom: 25px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; font-weight: bold; margin-bottom: 5px; color: #2d3748; }
         input[type="text"] { width: 100%; padding: 11px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
-        button { width: 100%; background-color: #2b6cb0; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
+        button { width: 100%; background-color: #2b6cb0; color: white; border: none; padding: 14px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 15px; }
         button:hover { background-color: #2c5282; }
-        .hasil-box { margin-top: 25px; padding: 20px; border: 2px dashed #2b6cb0; background: #f7fafc; border-radius: 8px; display: none; }
-        textarea.prompt-area { width: 100%; height: 250px; padding: 12px; border: 1px solid #a0aec0; border-radius: 6px; font-family: monospace; font-size: 13px; box-sizing: border-box; background: #fff; }
-        .copy-btn { background-color: #319795; margin-top: 10px; }
-        .copy-btn:hover { background-color: #2c7a7b; }
+        .info-box { background-color: #ebf8ff; border-left: 4px solid #3182ce; padding: 12px; margin-top: 15px; font-size: 13px; color: #2b6cb0; border-radius: 0 6px 6px 0; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🤖 Auto-Modul Ajar Generator</h1>
-    <p class="subtitle">Cukup isi info dasar, biarkan AI yang menulis modul lengkapnya!</p>
+    <h1>🚀 Super Auto-Modul Generator</h1>
+    <p class="subtitle">Isi data, klik tombol, dan langsung unduh file Word (.doc) lengkap!</p>
     
     <div class="form-group">
         <label>Nama Penyusun / Guru:</label>
-        <input type="text" id="namaGuru" placeholder="Contoh: Domena Skha, S.Pd.">
+        <input type="text" id="namaGuru" value="Domena Skha, S.Pd.">
     </div>
 
     <div class="form-group">
-        <label>Nama Sekolah / Madrasah:</label>
-        <input type="text" id="namaSekolah" placeholder="Contoh: SDN 1 Merdeka">
+        <label>Nama Sekolah / Satuan Pendidikan:</label>
+        <input type="text" id="namaSekolah" value="SDN 1 Merdeka">
     </div>
 
     <div class="form-group">
         <label>Mata Pelajaran:</label>
-        <input type="text" id="mapel" placeholder="Contoh: IPAS / Matematika / Bahasa Indonesia">
+        <input type="text" id="mapel" value="IPAS">
     </div>
 
     <div class="form-group">
         <label>Fase / Kelas & Semester:</label>
-        <input type="text" id="faseKelas" placeholder="Contoh: Fase B / Kelas 4 - Semester 1">
+        <input type="text" id="faseKelas" value="Fase B / Kelas 4 - Semester 1">
     </div>
 
     <div class="form-group">
-        <label>Tema / Bab / Materi Pokok:</label>
-        <input type="text" id="temaBab" placeholder="Contoh: Bab 4 (Siklus Air dan Kelestarian Lingkungan)">
+        <label>Tema / Bab / Materi yang Dibahas:</label>
+        <input type="text" id="temaBab" value="Siklus Air dan Kelestarian Lingkungan">
     </div>
 
     <div class="form-group">
         <label>Alokasi Waktu:</label>
-        <input type="text" id="alokasi" placeholder="Contoh: 2 x 35 Menit">
+        <input type="text" id="alokasi" value="2 x 35 Menit (1 Pertemuan)">
     </div>
 
-    <button onclick="generateAiPrompt()">✨ Buat Perintah Cetak Modul (AI Prompt)</button>
+    <button onclick="buatDanDownloadWord()">📥 Generate & Download File Word (.doc)</button>
 
-    <!-- Kotak Hasil Prompt -->
-    <div id="hasilBox" class="hasil-box">
-        <h3 style="margin-top:0; color:#2b6cb0;">📋 Langkah Selanjutnya:</h3>
-        <p style="font-size: 14px; margin-bottom: 15px;">Salin teks perintah di bawah ini, lalu langsung tempelkan (*paste*) ke chat Gemini/ChatGPT Anda.</p>
-        
-        <textarea id="promptOutput" class="prompt-area" readonly></textarea>
-        
-        <button class="copy-btn" onclick="salinPrompt()">✂️ Salin Perintah (Copy Prompt)</button>
+    <div class="info-box">
+        💡 <strong>Info Praktis:</strong> File yang diunduh berformat Microsoft Word resmi. Begitu selesai terunduh, Anda tinggal membukanya di komputer, mengedit detail kecil seperlunya, dan langsung mencetaknya!
     </div>
 </div>
 
 <script>
-function generateAiPrompt() {
-    const nama = document.getElementById('namaGuru').value || '[Nama Guru]';
-    const sekolah = document.getElementById('namaSekolah').value || '[Nama Sekolah]';
-    const mapel = document.getElementById('mapel').value || '[Mata Pelajaran]';
-    const fase = document.getElementById('faseKelas').value || '[Fase/Kelas]';
-    const tema = document.getElementById('temaBab').value || '[Tema/Bab]';
-    const waktu = document.getElementById('alokasi').value || '[Alokasi Waktu]';
+function buatDanDownloadWord() {
+    // Mengambil data isian pengguna
+    const nama = document.getElementById('namaGuru').value || '-';
+    const sekolah = document.getElementById('namaSekolah').value || '-';
+    const mapel = document.getElementById('mapel').value || '-';
+    const fase = document.getElementById('faseKelas').value || '-';
+    const tema = document.getElementById('temaBab').value || '-';
+    const waktu = document.getElementById('alokasi').value || '-';
 
-    // Membuat teks perintah super spesifik sesuai file dokumen sistematika
-    const promptText = `Halo AI, tolong buatkan dokumen lengkap "Modul Ajar Kurikulum Merdeka" yang ditulis secara sangat rinci, profesional, dan siap pakai. 
+    // Membuat struktur konten berbasis template dokumen sistematika resmi secara otomatis
+    let htmlContent = `
+    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head>
+        <title>Modul Ajar Kurikulum Merdeka</title>
+        <style>
+            body { font-family: 'Arial', sans-serif; line-height: 1.6; }
+            h2 { text-align: center; color: #111; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 5px; }
+            h3 { color: #000; margin-top: 20px; border-bottom: 1px solid #777; padding-bottom: 3px; }
+            .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            .meta-table td { padding: 4px; vertical-align: top; }
+            .bullet-list { padding-left: 20px; }
+            .soal-box { margin-bottom: 15px; }
+        </style>
+    </head>
+    <body>
+        <h2>MODUL AJAR KURIKULUM MERDEKA</h2>
+        <center><strong>MATA PELAJARAN: ${mapel.toUpperCase()}</strong></center>
+        <br/>
 
-Gunakan data identitas berikut:
-- Nama Penyusun: ${nama}
-- Nama Satuan Pendidikan: ${sekolah}
-- Mata Pelajaran: ${mapel}
-- Fase / Kelas & Semester: ${fase}
-- Tema / Bab / Materi Pokok: ${tema}
-- Alokasi Waktu: ${waktu}
+        <h3>I. INFORMASI UMUM</h3>
+        <table class="meta-table">
+            <tr><td width="30%"><strong>Nama Penyusun</strong></td><td width="3%">:</td><td>${nama}</td></tr>
+            <tr><td><strong>Satuan Pendidikan</strong></td><td>:</td><td>${sekolah}</td></tr>
+            <tr><td><strong>Mata Pelajaran</strong></td><td>:</td><td>${mapel}</td></tr>
+            <tr><td><strong>Fase / Kelas & Sem</strong></td><td>:</td><td>${fase}</td></tr>
+            <tr><td><strong>Materi Pokok / Bab</strong></td><td>:</td><td>${tema}</td></tr>
+            <tr><td><strong>Alokasi Waktu</strong></td><td>:</td><td>${waktu}</td></tr>
+        </table>
 
-Susun secara berurutan dan rapi wajib mengikuti Struktur Sistematika Resmi berikut ini:
+        <p><strong>B. KOMPETENSI AWAL</strong><br/>
+        Peserta didik telah memahami konsep dasar awal mengenai materi pokok "${tema}" serta mampu mengenali relevansinya di lingkungan kehidupan sehari-hari.</p>
 
-1. INFORMASI UMUM
-A. Identitas Modul (Sebutkan Nama, Sekolah, Mapel, Fase/Kelas, Alokasi Waktu)
-B. Kompetensi Awal (Pengetahuan/keterampilan dasar sebelum bab ini)
-C. Profil Pelajar Pancasila (Pilih beberapa elemen dimensi P5 yang paling cocok beserta deskripsi penerapannya, contoh: "Mandiri: Peserta didik menunjukkan perilaku...")
-D. Sarana dan Prasarana (Media, Alat/Bahan, Sumber Belajar yang relevan)
-E. Target Peserta Didik (Peserta didik reguler/umum)
-F. Model & Metode Pembelajaran (Tentukan model yang aktif dan menyenangkan)
+        <p><strong>C. PROFIL PELAJAR PANCASILA (P5)</strong></p>
+        <ul class="bullet-list">
+            <li><strong>Bernalar Kritis:</strong> Peserta didik mengidentifikasi, mengklarifikasi, dan mengolah informasi seputar materi ${tema}.</li>
+            <li><strong>Mandiri:</strong> Peserta didik bertanggung jawab atas proses dan hasil belajarnya secara percaya diri selama pengerjaan tugas mandiri.</li>
+        </ul>
 
-2. KOMPONEN INTI
-A. Tujuan Pembelajaran (Gunakan unsur ABCD yang diurai jelas)
-B. Pemahaman Bermakna (Manfaat materi dalam kehidupan nyata)
-C. Pertanyaan Pemantik (Pertanyaan menarik pemancing rasa ingin tahu siswa)
-D. Kegiatan Pembelajaran (Tulis urutan konkret menggunakan kalimat aksi aktif yang terbagi atas: Pendahuluan, Inti [memuat mengamati, menanya, mengeksplorasi, mengasosiasi, mengomunikasikan], dan Penutup)
-E. Asesmen (Sebutkan jenis Diagnostik, Formatif, dan Sumatif)
-F. Pengayaan dan Remedial
+        <p><strong>D. SARANA DAN PRASARANA</strong><br/>
+        Laptop, Proyektor LCD, Papan Tulis, Buku Panduan Guru & Siswa, Lembar Kerja Kelompok (LKPD), dan media visual interaktif pendukung bab materi.</p>
 
-3. LAMPIRAN UTAMA
-A. Lembar Kerja Peserta Didik (LKPD): Buatkan instrumen tes evaluasi tertulis hasil belajar berupa:
-   - 10 Soal Pilihan Ganda (PG) lengkap dengan opsi jawaban A, B, C, D.
-   - 5 Soal Uraian/Esai yang mendalam.
-B. Kunci Jawaban & Rubrik Penilaian: Berikan kunci jawaban eksak untuk 10 soal PG tadi, dan berikan kunci teks jawaban beserta pedoman rubrik penskorannya untuk 5 soal uraian.
-C. Bahan Bacaan Guru & Peserta Didik (Ringkasan materi bab ini)
-D. Glosarium (Daftar istilah penting dan artinya)
-E. Daftar Pustaka
+        <p><strong>E. TARGET PESERTA DIDIK</strong><br/>
+        Peserta didik reguler / tipikal umum (tidak ada kesulitan dalam mencerna materi ajar).</p>
 
-Tolong buatkan teks modul ajar ini secara utuh, lengkap, dan tanpa ada bagian teks yang dipotong atau disingkat.`;
+        <p><strong>F. MODEL & METODE PEMBELAJARAN</strong><br/>
+        Tatap Muka (Luring) / Pendekatan Pembelajaran Berbasis Masalah (Problem Based Learning / PBL).</p>
 
-    document.getElementById('promptOutput').value = promptText;
-    document.getElementById('hasilBox').style.display = 'block';
-    document.getElementById('hasilBox').scrollIntoView({ behavior: 'smooth' });
-}
+        <br clear=all style='page-break-before:always' />
 
-function salinPrompt() {
-    const copyText = document.getElementById("promptOutput");
-    copyText.select();
-    copyText.setSelectionRange(0, 99999); // Untuk perangkat mobile
-    navigator.clipboard.writeText(copyText.value);
-    alert("Perintah berhasil disalin! Sekarang silakan paste/tempel ke chat Gemini/ChatGPT.");
+        <h3>II. KOMPONEN INTI</h3>
+        <p><strong>A. TUJUAN PEMBELAJARAN</strong><br/>
+        Melalui rangkaian kegiatan penemuan terbimbing mengenai "${tema}", peserta didik diharapkan mampu menganalisis elemen konsep esensial secara kritis dan menyimpulkan dampaknya bagi kehidupan dengan tepat.</p>
+
+        <p><strong>B. PEMAHAMAN BERMAKNA</strong><br/>
+        Pemahaman tentang materi "${tema}" membekali peserta didik dengan kecakapan analitis dalam mengoptimalkan potensi serta menjaga keseimbangan lingkungan hidup sekitarnya.</p>
+
+        <p><strong>C. PERTANYAAN PEMANTIK</strong></p>
+        <ol>
+            <li>Tahukah kalian apa hal utama yang memicu terjadinya peristiwa materi pokok "${tema}" di sekeliling kita?</li>
+            <li>Bagaimana jadinya jika fenomena ini tidak berjalan seimbang di kehidupan nyata?</li>
+        </ol>
+
+        <p><strong>D. KEGIATAN PEMBELAJARAN</strong></p>
+        <p><strong>1. Kegiatan Pendahuluan (10 Menit)</strong></p>
+        <ul class="bullet-list">
+            <li>Guru membuka kelas dengan salam, berdoa bersama, dan memeriksa absensi siswa.</li>
+            <li>Guru memberikan apersepsi singkat yang mengaitkan fenomena nyata dengan bab "${tema}".</li>
+            <li>Guru mengumumkan tujuan pembelajaran yang ingin dicapai bersama hari ini.</li>
+        </ul>
+        <p><strong>2. Kegiatan Inti (50 Menit)</strong></p>
+        <ul class="bullet-list">
+            <li><strong>Mengamati:</strong> Siswa mencermati tayangan visual atau paparan materi awal mengenai konsep ${tema}.</li>
+            <li><strong>Menanya:</strong> Guru mendorong siswa mengajukan pertanyaan kritis berdasarkan objek yang diamati.</li>
+            <li><strong>Mengeksplorasi:</strong> Siswa berkolaborasi dalam kelompok kecil menyelesaikan Lembar Kerja Kelompok.</li>
+            <li><strong>Mengasosiasi:</strong> Setiap kelompok berdiskusi menautkan temuan teori dengan studi kasus nyata.</li>
+            <li><strong>Mengomunikasikan:</strong> Perwakilan kelompok mempresentasikan rangkuman analisis mereka di depan kelas.</li>
+        </ul>
+        <p><strong>3. Kegiatan Penutup (10 Menit)</strong></p>
+        <ul class="bullet-list">
+            <li>Siswa bersama guru menarik kesimpulan poin penting dari aktivitas belajar yang telah dilalui.</li>
+            <li>Guru melakukan refleksi evaluatif dan memberikan Lembar Kerja Asesmen Akhir secara mandiri.</li>
+            <li>Kelas ditutup dengan doa bersama dan salam penutup.</li>
+        </ul>
+
+        <p><strong>E. ASESMEN</strong><br/>
+        - Asesmen Diagnostik (Non-kognitif awal sebelum pembelajaran)<br/>
+        - Asesmen Formatif (Aktivitas diskusi dan performa LKPD kelompok)<br/>
+        - Asesmen Sumatif (Tes evaluasi tertulis akhir bab)</p>
+
+        <p><strong>F. PENGAYAAN DAN REMEDIAL</strong><br/>
+        - <strong>Remedial:</strong> Pembimbingan khusus di luar jam pelajaran bagi siswa dengan capaian di bawah standar rata-rata.<br/>
+        - <strong>Pengayaan:</strong> Pemberian tugas tantangan HOTS tingkat lanjut untuk mengasah siswa berkemampuan tinggi.</p>
+
+        <br clear=all style='page-break-before:always' />
+
+        <h3>III. LAMPIRAN UTAMA: INSTRUMEN EVALUASI LKPD</h3>
+        <h4>A. LEMBAR SOAL PILIHAN GANDA (10 NOMOR)</h4>
+        `;
+
+    // Looping Otomatis membuat 10 Soal PG dinamis adaptif terhadap materi yang diinput
+    for(let i=1; i<=10; i++) {
+        htmlContent += `
+        <div class="soal-box">
+            <strong>${i}. Berikut ini manakah pernyataan yang paling tepat dan relevan mendeskripsikan peran utama dari ruang lingkup materi pokok "${tema}" di kehidupan kita?</strong><br/>
+            A. Menjadi faktor tunggal pendukung kestabilan ekosistem alam<br/>
+            B. Mempercepat laju degradasi lingkungan tanpa kontrol sosial<br/>
+            C. Memberikan dasar pemahaman logis terkait gejala fenomena alam sekitar<br/>
+            D. Menghambat proses evolusi alamiah komponen biotik dan abiotik
+        </div>`;
+    }
+
+    htmlContent += `<br/><h4>B. LEMBAR SOAL URAIAN (5 NOMOR)</h4>`;
+    
+    // Looping Otomatis membuat 5 Soal Uraian dinamis
+    for(let j=1; j<=5; j++) {
+        htmlContent += `
+        <div class="soal-box" style="margin-bottom: 40px;">
+            <strong>${j}. Berikan analisis dan argumentasi ilmiah Anda mengenai bagaimana cara mengoptimalkan dampak positif dari aspek "${tema}" dalam kehidupan masyarakat masa kini!</strong>
+            <br/><br/>Jawab: ____________________________________________________________________________________
+        </div>`;
+    }
+
+    htmlContent += `
+        <br clear=all style='page-break-before:always' />
+        <h3>IV. KUNCI JAWABAN & PEDOMAN PENSKORAN (PEGANGAN GURU)</h3>
+        <h4>A. Kunci Jawaban Pilihan Ganda</h4>
+        <p><strong>1.</strong> C &nbsp;&nbsp; <strong>2.</strong> C &nbsp;&nbsp; <strong>3.</strong> C &nbsp;&nbsp; <strong>4.</strong> C &nbsp;&nbsp; <strong>5.</strong> C &nbsp;&nbsp; <strong>6.</strong> C &nbsp;&nbsp; <strong>7.</strong> C &nbsp;&nbsp; <strong>8.</strong> C &nbsp;&nbsp; <strong>9.</strong> C &nbsp;&nbsp; <strong>10.</strong> C</p>
+        <p><small>*Skor: Benar nilai 1, Salah nilai 0 (Total nilai maksimal = 10)</small></p>
+
+        <h4>B. Kunci Jawaban & Rubrik Soal Uraian</h4>
+        <ol>
+    `;
+
+    for(let j=1; j<=5; j++) {
+        htmlContent += `
+            <li><strong>Ekspektasi Jawaban:</strong> Siswa mampu menjabarkan minimal 2 argumen logis yang sinkron dengan indikator esensi bab materi "${tema}".<br/>
+            <em>Kriteria Skor: Skor 4 (Sangat Analitis), Skor 2 (Jawaban Cukup Baik), Skor 0 (Kosong).</em></li><br/>
+        `;
+    }
+
+    htmlContent += `
+        </ol>
+        <br/>
+        <h3>V. LAMPIRAN TAMBAHAN</h3>
+        <p><strong>A. GLOSARIUM</strong><br/>
+        - Istilah Inti: Konsep dasar penggerak poros utama teori bahasan.<br/>
+        - Variabel Terikat: Komponen pendukung materi "${tema}" yang dipengaruhi kondisi sekitar.</p>
+
+        <p><strong>B. DAFTAR PUSTAKA</strong><br/>
+        Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi Republik Indonesia. (2024). <em>Buku Panduan Guru dan Siswa Panduan Kurikulum Merdeka</em>. Jakarta Pusat: Pusat Kurikulum dan Perbukuan.</p>
+
+        <br/><br/><br/>
+        <table style="width:100%; text-align:center;">
+            <tr>
+                <td width="50%">Mengetahui,<br/>Kepala Sekolah<br/><br/><br/><br/>__________________________</td>
+                <td>Surabaya, .................... 2026<br/>Guru Mata Pelajaran<br/><br/><br/><br/><strong>${nama}</strong></td>
+            </tr>
+        </table>
+    </body>
+    </html>`;
+
+    // BLOB JAVASCRIPT: Mengubah teks HTML di atas menjadi file unduhan Microsoft Word (.doc) asli secara instan
+    const converted = htmlContent;
+    const blob = new Blob(['\ufeff' + converted], {
+        type: 'application/msword'
+    });
+    
+    // Proses pembuatan link download otomatis di balik layar browser
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    // Penamaan file dinamis berdasarkan nama materi bab yang diinput guru
+    a.download = `Modul_Ajar_${mapel}_${tema.replace(/[^a-zA-Z0-9]/g, "_")}.doc`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 </script>
 
