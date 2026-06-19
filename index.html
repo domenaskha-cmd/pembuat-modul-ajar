@@ -3,107 +3,384 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pembuat Modul Ajar Kurikulum Merdeka</title>
+    <title>Generator Modul Ajar Kurikulum Merdeka + Kunci LKPD</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h1 { text-align: center; color: #1a365d; margin-bottom: 5px; }
-        p.subtitle { text-align: center; color: #4a5568; margin-top: 0; margin-bottom: 25px; }
-        .form-group { margin-bottom: 15px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 35px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h1, h2, h3, h4 { color: #1a365d; }
+        h1 { text-align: center; margin-bottom: 5px; }
+        p.subtitle { text-align: center; color: #4a5568; margin-top: 0; margin-bottom: 30px; font-weight: 500; }
+        .section-title { background: #2b6cb0; color: white; padding: 10px; border-radius: 6px; margin-top: 25px; font-size: 16px; font-weight: bold; }
+        .form-group { margin-top: 15px; margin-bottom: 15px; }
         label { display: block; font-weight: bold; margin-bottom: 5px; color: #2d3748; }
         input[type="text"], select, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
         textarea { height: 100px; resize: vertical; }
-        button { width: 100%; background-color: #2b6cb0; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        button { width: 100%; background-color: #2b6cb0; color: white; border: none; padding: 14px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 20px; }
         button:hover { background-color: #2c5282; }
-        .hasil-box { margin-top: 30px; padding: 20px; border: 2px dashed #bba; background: #fffaf0; border-radius: 8px; display: none; }
-        .hasil-box h2 { color: #2c5282; text-align: center; border-bottom: 2px solid #2b6cb0; padding-bottom: 10px; }
-        .cetak-btn { background-color: #38a169; margin-top: 15px; }
+        
+        /* Tampilan Cetak Hasil Modul */
+        .hasil-box { margin-top: 40px; padding: 30px; border: 2px solid #1a365d; background: #ffffff; border-radius: 8px; display: none; }
+        .print-header { text-align: center; border-bottom: 3px double #1a365d; padding-bottom: 15px; margin-bottom: 20px; }
+        .print-section { margin-top: 20px; }
+        .print-section h3 { border-bottom: 1px solid #cbd5e0; padding-bottom: 5px; margin-bottom: 10px; color: #2b6cb0; font-size: 16px; }
+        .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        .meta-table td { padding: 6px; vertical-align: top; font-size: 14px; }
+        .meta-table td.label { width: 25%; font-weight: bold; }
+        .meta-table td.colon { width: 3%; }
+        .cetak-btn { background-color: #38a169; }
         .cetak-btn:hover { background-color: #2f855a; }
+        .soal-list { padding-left: 20px; }
+        .soal-item { margin-bottom: 15px; }
+        .pilihan-opsi { list-style-type: none; padding-left: 0; margin: 5px 0; }
+        .pilihan-opsi li { margin-bottom: 2px; }
+        .kunci-box { background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-top: 10px; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; padding: 0; max-width: 100%; }
+            input, select, textarea, button, .section-title, .form-group, h1, p.subtitle, h3 { display: none !none; }
+            .no-print { display: none !important; }
+            .hasil-box { display: block !important; border: none; padding: 0; margin-top: 0; }
+            .page-break { page-break-before: always; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📝 Pembuat Modul Ajar</h1>
-    <p class="subtitle">Kurikulum Merdeka Otomatis & Praktis</p>
-    
-    <div class="form-group">
-        <label>Nama Penyusun / Guru:</label>
-        <input type="text" id="namaGuru" placeholder="Contoh: Domena Skha, S.Pd.">
-    </div>
-
-    <div class="form-group">
-        <label>Nama Sekolah:</label>
-        <input type="text" id="namaSekolah" placeholder="Contoh: SDN 1 Merdeka">
-    </div>
-
-    <div class="form-group">
-        <label>Mata Pelajaran:</label>
-        <select id="mapel">
-            <option value="Bahasa Indonesia">Bahasa Indonesia</option>
-            <option value="Matematika">Matematika</option>
-            <option value="IPAS">IPAS</option>
-            <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
-            <option value="Seni Budaya">Seni Budaya</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Fase / Kelas & Semester:</label>
-        <input type="text" id="faseKelas" placeholder="Contoh: Fase B / Kelas 4 - Semester 1">
-    </div>
-
-    <div class="form-group">
-        <label>Tujuan Pembelajaran (TP):</label>
-        <textarea id="tujuan" placeholder="Tuliskan tujuan pembelajaran yang ingin dicapai..."></textarea>
-    </div>
-
-    <div class="form-group">
-        <label>Langkah-Langkah Kegiatan Pembelajaran:</label>
-        <textarea id="kegiatan" placeholder="1. Pendahuluan (Apersepsi)&#10;2. Kegiatan Inti (Eksplorasi)&#10;3. Penutup (Refleksi)"></textarea>
-    </div>
-
-    <button onclick="susunModul()">✨ Susun & Generate Modul Ajar</button>
-
-    <div id="hasilBox" class="hasil-box">
-        <h2>INFORMASI MODUL AJAR</h2>
-        <p><strong>Penyusun:</strong> <span id="resNama"></span></p>
-        <p><strong>Instansi:</strong> <span id="resSekolah"></span></p>
-        <p><strong>Mata Pelajaran:</strong> <span id="resMapel"></span></p>
-        <p><strong>Fase/Kelas:</strong> <span id="resFase"></span></p>
-        <hr>
-        <h3>A. TUJUAN PEMBELAJARAN</h3>
-        <p id="resTujuan" style="white-space: pre-line;"></p>
-        <hr>
-        <h3>B. KEGIATAN PEMBELAJARAN</h3>
-        <p id="resKegiatan" style="white-space: pre-line;"></p>
+    <div class="no-print">
+        <h1>📝 Pembuat Modul Ajar Otomatis</h1>
+        <p class="subtitle">Sesuai Panduan Resmi + Bank Soal & Kunci Jawaban LKPD Otomatis</p>
         
-        <button class="cetak-btn" onclick="window.print()">🖨️ Cetak / Simpan ke PDF</button>
+        <!-- I. INFORMASI UMUM -->
+        <div class="section-title">I. INFORMASI UMUM</div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Nama Penyusun / Guru:</label>
+                <input type="text" id="namaGuru" value="Domena Skha, S.Pd.">
+            </div>
+            <div class="form-group">
+                <label>Nama Satuan Pendidikan/Instansi:</label>
+                <input type="text" id="namaSekolah" value="SDN 1 Merdeka">
+            </div>
+        </div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Mata Pelajaran:</label>
+                <input type="text" id="mapel" value="IPAS">
+            </div>
+            <div class="form-group">
+                <label>Tahun Pelajaran:</label>
+                <input type="text" id="tahunAjar" value="2026-2027">
+            </div>
+        </div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Fase / Kelas:</label>
+                <input type="text" id="faseKelas" value="Fase B / Kelas 4">
+            </div>
+            <div class="form-group">
+                <label>Alokasi Waktu:</label>
+                <input type="text" id="alokasi" value="2 x 35 Menit (1 Pertemuan)">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Kompetensi Awal:</label>
+            <textarea id="kompetensiAwal">Peserta didik menunjukkan perilaku mengenali sifat-sifat air dan bentuk-bentuk air di lingkungan sekitar.</textarea>
+        </div>
+        <div class="form-group">
+            <label>Profil Pelajar Pancasila (P5) & Keterangan Karakter:</label>
+            <textarea id="p5Input">1. Bernalar Kritis: Peserta didik menunjukkan perilaku berani bertanya dan memberikan solusi.&#10;2. Mandiri: Peserta didik menunjukkan perilaku percaya diri dalam mengerjakan tugas individual.</textarea>
+        </div>
+        <div class="form-group">
+            <label>Sarana dan Prasarana:</label>
+            <textarea id="sarpras">Laptop, Proyektor, LCD, Video Pembelajaran, Air, Gelas botol transparan, Lembar Kerja Kerja Kelompok.</textarea>
+        </div>
+        <div class="form-group">
+            <label>Target Peserta Didik:</label>
+            <input type="text" id="targetPeserta" value="Peserta didik reguler/tipikal (Umum)">
+        </div>
+        <div class="form-group">
+            <label>Model & Metode Pembelajaran:</label>
+            <input type="text" id="modelBelajar" value="Tatap Muka / Problem Based Learning (PBL)">
+        </div>
+
+        <!-- II. KOMPONEN INTI -->
+        <div class="section-title">II. KOMPONEN INTI</div>
+        <div class="form-group">
+            <label>Tujuan Pembelajaran (TP):</label>
+            <textarea id="tujuan">Melalui eksperimen kelompok tentang daur air, peserta didik dapat mengidentifikasi urutan siklus air secara runtut dan mendeskripsikan pengaruhnya dalam kehidupan sehari-hari dengan benar.</textarea>
+        </div>
+        <div class="form-group">
+            <label>Pemahaman Bermakna:</label>
+            <textarea id="bermakna">Peserta didik mengetahui bagaimana siklus air menjaga ketersediaan air bersih di bumi serta pentingnya menjaga kelestarian mata air bagi kehidupan makhluk hidup sehari-hari.</textarea>
+        </div>
+        <div class="form-group">
+            <label>Pertanyaan Pemantik:</label>
+            <textarea id="pemantik">1. Mengapa air di bumi tidak pernah habis meskipun kita gunakan setiap hari?&#10;2. Apa yang akan terjadi jika hujan tidak turun dalam waktu satu tahun?</textarea>
+        </div>
+        <div class="form-group">
+            <label>Kegiatan Pembelajaran (Pendahuluan, Inti, Penutup):</label>
+            <textarea id="kegiatan" style="height:120px;">A. PENDAHULUAN:&#10;- Guru mengucapkan salam, berdoa, memeriksa kehadiran.&#10;- Guru memberikan apersepsi dan melakukan asesmen diagnostik awal.&#10;- Guru menyampaikan tujuan pembelajaran dan pertanyaan pemantik.&#10;&#10;B. INTI:&#10;- Mengamati: Peserta didik mengamati video/maket daur air.&#10;- Menanya: Peserta didik mengajukan pertanyaan mengenai proses penguapan.&#10;- Mengeksplorasi: Peserta didik melakukan simulasi eksperimen siklus air mini berkelompok.&#10;- Mengasosiasi: Peserta didik menganalisis lembar kerja kelompok.&#10;- Mengomunikasikan: Peserta didik mempresentasikan hasil pameran karya siklus air.&#10;&#10;C. PENUTUP:&#10;- Guru bersama peserta didik merangkum hasil belajar.&#10;- Guru melakukan refleksi dan membagikan lembar asesmen formatif akhir.</textarea>
+        </div>
+
+        <!-- III. INPUT BANK SOAL & KUNCI JAWABAN -->
+        <div class="section-title">III. INSTRUMEN SOAL & KUNCI JAWABAN LKPD</div>
+        
+        <h4>A. 10 Soal Pilihan Ganda (PG) & Kunci</h4>
+        <div id="pgContainer"></div>
+
+        <h4>B. 5 Soal Uraian & Kunci</h4>
+        <div id="uraianContainer"></div>
+
+        <!-- IV. LAMPIRAN LAINNYA -->
+        <div class="section-title">IV. LAMPIRAN TAMBAHAN</div>
+        <div class="form-group">
+            <label>Glosarium:</label>
+            <textarea id="glosarium">Evaporasi: Proses penguapan air akibat panas matahari.&#10;Kondensasi: Proses pengembunan uap air menjadi awan.&#10;Presipitasi: Proses jatuhnya butiran air ke bumi (Hujan).</textarea>
+        </div>
+        <div class="form-group">
+            <label>Daftar Pustaka:</label>
+            <textarea id="pustaka">Fitri, Amalia dkk. (2021). Buku Panduan Guru dan Siswa IPAS Kelas IV. Jakarta: Kemendikbudristek Ristek.</textarea>
+        </div>
+
+        <button onclick="buatModulLengkap()">✨ Susun Modul & Kunci Jawaban Lengkap</button>
+    </div>
+
+    <!-- ==================== TAMPILAN OUTPUT HASIL CETAK MODUL ==================== -->
+    <div id="hasilBox" class="hasil-box">
+        <div class="print-header">
+            <h2>MODUL AJAR KURIKULUM MERDEKA</h2>
+            <h3 style="margin:5px 0;" id="outJudulMapel">MATA PELAJARAN</h3>
+        </div>
+
+        <!-- I. INFORMASI UMUM -->
+        <div class="print-section">
+            <h3>I. INFORMASI UMUM</h3>
+            <table class="meta-table">
+                <tr><td class="label">Nama Penyusun</td><td class="colon">:</td><td id="outGuru"></td></tr>
+                <tr><td class="label">Satuan Pendidikan</td><td class="colon">:</td><td id="outSekolah"></td></tr>
+                <tr><td class="label">Tahun Pelajaran</td><td class="colon">:</td><td id="outTahun"></td></tr>
+                <tr><td class="label">Fase / Kelas</td><td class="colon">:</td><td id="outFase"></td></tr>
+                <tr><td class="label">Alokasi Waktu</td><td class="colon">:</td><td id="outAlokasi"></td></tr>
+            </table>
+            
+            <p><strong>B. KOMPETENSI AWAL</strong></p>
+            <p id="outKompetensi" style="white-space: pre-line; padding-left:15px;"></p>
+            
+            <p><strong>C. PROFIL PELAJAR PANCASILA (P5)</strong></p>
+            <p id="outP5" style="white-space: pre-line; padding-left:15px;"></p>
+            
+            <p><strong>D. SARANA DAN PRASARANA</strong></p>
+            <p id="outSarpras" style="white-space: pre-line; padding-left:15px;"></p>
+            
+            <p><strong>E. TARGET PESERTA DIDIK</strong></p>
+            <p id="outTarget" style="padding-left:15px;"></p>
+            
+            <p><strong>F. MODEL & METODE PEMBELAJARAN</strong></p>
+            <p id="outModel" style="padding-left:15px;"></p>
+        </div>
+
+        <!-- II. KOMPONEN INTI -->
+        <div class="print-section page-break">
+            <h3>II. KOMPONEN INTI</h3>
+            <p><strong>A. TUJUAN PEMBELAJARAN</strong></p>
+            <p id="outTujuan" style="white-space: pre-line; padding-left:15px;"></p>
+            
+            <p><strong>B. PEMAHAMAN BERMAKNA</strong></p>
+            <p id="outBermakna" style="white-space: pre-line; padding-left:15px;"></p>
+            
+            <p><strong>C. PERTANYAAN PEMANTIK</strong></p>
+            <p id="outPemantik" style="white-space: pre-line; padding-left:15px;"></p>
+            
+            <p><strong>D. KEGIATAN PEMBELAJARAN</strong></p>
+            <p id="outKegiatan" style="white-space: pre-line; padding-left:15px;"></p>
+            
+            <p><strong>E. ASESMEN & EVALUASI</strong></p>
+            <p style="padding-left:15px;">- Asesmen Diagnostik (Sebelum Pembelajaran)<br>- Asesmen Formatif (Selama Proses Pembelajaran)<br>- Asesmen Sumatif (Akhir Proses Pembelajaran)</p>
+            
+            <p><strong>F. PENGAYAAN DAN REMEDIAL</strong></p>
+            <p style="padding-left:15px;">- <strong>Remedial:</strong> Diberikan bagi peserta didik yang belum mencapai Kriteria Ketercapaian Tujuan Pembelajaran (KKTP).<br>- <strong>Pengayaan:</strong> Diberikan kepada peserta didik dengan capaian tinggi berupa pendalaman soal HOTS.</p>
+        </div>
+
+        <!-- III. LAMPIRAN: SOAL UNTUK SISWA -->
+        <div class="print-section page-break">
+            <h3>III. LAMPIRAN: LEMBAR KERJA PESERTA DIDIK (LKPD)</h3>
+            
+            <h4>A. SOAL PILIHAN GANDA (10 SOAL)</h4>
+            <ol class="soal-list" id="outPG"></ol>
+            
+            <h4 style="margin-top:30px;">B. SOAL URAIAN (5 SOAL)</h4>
+            <ol class="soal-list" id="outUraian"></ol>
+        </div>
+
+        <!-- IV. LAMPIRAN: KUNCI JAWABAN GURU -->
+        <div class="print-section page-break">
+            <h3>IV. KUNCI JAWABAN & PEDOMAN PENSKORAN (PEGANGAN GURU)</h3>
+            
+            <h4>A. Kunci Jawaban Soal Pilihan Ganda (10 Nomor)</h4>
+            <div id="outKunciPG" class="kunci-box" style="line-height: 1.8;"></div>
+            
+            <h4 style="margin-top:20px;">B. Kunci Jawaban & Rubrik Soal Uraian (5 Nomor)</h4>
+            <div id="outKunciUraian"></div>
+        </div>
+        
+        <!-- V. LAMPIRAN TAMBAHAN -->
+        <div class="print-section page-break">
+            <h3>V. LAMPIRAN TAMBAHAN</h3>
+            <p><strong>A. GLOSARIUM</strong></p>
+            <p id="outGlosarium" style="white-space: pre-line; padding-left:15px;"></p>
+            
+            <p><strong>B. DAFTAR PUSTAKA</strong></p>
+            <p id="outPustaka" style="white-space: pre-line; padding-left:15px;"></p>
+            
+            <table style="width:100%; margin-top:5px; text-align:center;">
+                <tr>
+                    <td style="width:50%;">Mengetahui,<br>Kepala Sekolah<br><br><br><br>__________________________</td>
+                    <td style="width:50%;">Surabaya, .................... 2026<br>Guru Mata Pelajaran<br><br><br><br><span id="outTandaTangan"></span></td>
+                </tr>
+            </table>
+        </div>
+
+        <button class="no-print cetak-btn" onclick="window.print()">🖨️ Cetak / Unduh Modul & Kunci ke PDF</button>
     </div>
 </div>
 
 <script>
-function susunModul() {
-    // Ambil semua data dari form input
-    const nama = document.getElementById('namaGuru').value || '-';
-    const sekolah = document.getElementById('namaSekolah').value || '-';
-    const mapel = document.getElementById('mapel').value;
-    const fase = document.getElementById('faseKelas').value || '-';
-    const tujuan = document.getElementById('tujuan').value || 'Belum diisi.';
-    const kegiatan = document.getElementById('kegiatan').value || 'Belum diisi.';
+// Contoh database isian otomatis materi siklus air agar guru tidak capek mengetik awal
+const defaultPG = [
+    { s: "Proses penguapan air di permukaan bumi karena panas matahari disebut...", a: "A. Evaporasi", b: "B. Kondensasi", c: "C. Presipitasi", d: "D. Infiltrasi", k: "A" },
+    { s: "Uap air yang naik ke atmosfer akan mendingin dan membentuk awan. Proses ini disebut...", a: "A. Evaporasi", b: "B. Kondensasi", c: "C. Presipitasi", d: "D. Transpirasi", k: "B" },
+    { s: "Peristiwa jatuhnya titik-titik air hujan ke permukaan bumi disebut...", a: "A. Kondensasi", b: "B. Evaporasi", c: "C. Presipitasi", d: "D. Infiltrasi", k: "C" },
+    { s: "Penguapan air yang berasal dari jaringan makhluk hidup (tumbuhan) dinamakan...", a: "A. Transpirasi", b: "B. Kondensasi", c: "C. Presipitasi", d: "D. Evaporasi", k: "A" },
+    { s: "Proses penyerapan air hujan ke dalam pori-pori tanah disebut...", a: "A. Evaporasi", b: "B. Infiltrasi", c: "C. Kondensasi", d: "D. Presipitasi", k: "B" },
+    { s: "Sumber panas utama yang menggerakkan siklus air di planet bumi adalah...", a: "A. Angin", b: "B. Inti Bumi", c: "C. Air Laut", d: "D. Matahari", k: "D" },
+    { s: "Awan yang tebal dan mengalami kejenuhan akan menurunkan hujan di daerah...", a: "A. Dataran rendah/tinggi", b: "B. Luar angkasa", c: "C. Inti matahari", d: "D. Atmosfer atas", k: "A" },
+    { s: "Berikut ini yang merupakan urutan siklus air yang benar dan runtut adalah...", a: "A. Kondensasi - Evaporasi - Presipitasi", b: "B. Evaporasi - Kondensasi - Presipitasi", c: "C. Presipitasi - Kondensasi - Evaporasi", d: "D. Infiltrasi - Presipitasi - Evaporasi", k: "B" },
+    { s: "Kegiatan manusia yang dapat mengganggu keberlangsungan siklus air bersih adalah...", a: "A. Reboisasi hutan gundul", b: "B. Membuat lubang biopori", c: "C. Penebangan hutan secara liar", d: "D. Menghemat air di rumah", k: "C" },
+    { s: "Air di bumi jumlahnya cenderung tetap karena adanya proses alami yang bernama...", a: "A. Arus laut", b: "B. Siklus air", c: "C. Gelombang pasang", d: "D. Pengikisan tanah", k: "B" }
+];
 
-    // Masukkan data ke kotak hasil
-    document.getElementById('resNama').innerText = nama;
-    document.getElementById('resSekolah').innerText = sekolah;
-    document.getElementById('resMapel').innerText = mapel;
-    document.getElementById('resFase').innerText = fase;
-    document.getElementById('resTujuan').innerText = tujuan;
-    document.getElementById('resKegiatan').innerText = kegiatan;
+const defaultUraian = [
+    { s: "Jelaskan perbedaan utama antara proses evaporasi dan transpirasi dalam siklus air!", k: "Evaporasi adalah proses penguapan air yang berasal dari badan air mati (sungai, laut, danau), sedangkan transpirasi adalah proses penguapan air yang berasal dari jaringan tubuh makhluk hidup (tumbuhan)." },
+    { s: "Mengapa air di bumi tidak kunjung habis meskipun terus digunakan makhluk hidup?", k: "Karena air mengalami siklus/daur air secara terus menerus, di mana air yang menguap akan kembali turun ke bumi dalam bentuk hujan, sehingga jumlah total volume air cenderung tetap." },
+    { s: "Apa fungsi awan dalam tahapan siklus atau daur air bersih?", k: "Awan berfungsi sebagai tempat penampungan sementara uap air yang mengalami pengembunan (kondensasi) sebelum menjadi jenuh dan jatuh kembali sebagai presipitasi (hujan)." },
+    { s: "Tuliskan dampak negatif yang terjadi jika daerah resapan air beton ditutup total tanpa biopori!", k: "Dampak negatifnya meliputi berkurangnya pasokan air tanah bawah tanah, memicu terjadinya banjir saat musim hujan, dan kekeringan ekstrem saat musim kemarau." },
+    { s: "Bagaimana cara kita sebagai siswa ikut serta menjaga ketersediaan air bersih di lingkungan rumah?", k: "Menggunakan air secukupnya saat mandi, menutup kran air setelah wadah penuh, menjaga kebersihan selokan, dan menanam tanaman hijau di halaman rumah." }
+];
 
-    // Tampilkan kotak hasil ke layar
-    document.getElementById('hasilBox').style.display = 'block';
+// Render Form PG otomatis
+const pgContainer = document.getElementById('pgContainer');
+for(let i=1; i<=10; i++) {
+    let d = defaultPG[i-1];
+    pgContainer.innerHTML += `
+        <div style="border: 1px solid #e2e8f0; padding:10px; margin-bottom:10px; border-radius:6px; background:#fff;">
+            <label>Soal PG No. ${i}:</label>
+            <input type="text" id="soalPG_${i}" value="${d.s}">
+            <div class="grid-2" style="margin-top:5px;">
+                <input type="text" id="opsiA_${i}" value="${d.a}">
+                <input type="text" id="opsiB_${i}" value="${d.b}">
+                <input type="text" id="opsiC_${i}" value="${d.c}">
+                <input type="text" id="opsiD_${i}" value="${d.d}">
+            </div>
+            <div style="margin-top:5px;">
+                <label style="display:inline; font-size:13px;">Kunci Jawaban PG:</label>
+                <select id="kunciPG_${i}" style="width:70px; display:inline; padding:3px;">
+                    <option value="A" ${d.k==='A'?'selected':''}>A</option>
+                    <option value="B" ${d.k==='B'?'selected':''}>B</option>
+                    <option value="C" ${d.k==='C'?'selected':''}>C</option>
+                    <option value="D" ${d.k==='D'?'selected':''}>D</option>
+                </select>
+            </div>
+        </div>
+    `;
+}
+
+// Render Form Uraian otomatis
+const urayanContainer = document.getElementById('uraianContainer');
+for(let j=1; j<=5; j++) {
+    let u = defaultUraian[j-1];
+    urayanContainer.innerHTML += `
+        <div style="border: 1px solid #e2e8f0; padding:10px; margin-bottom:10px; border-radius:6px; background:#fff;">
+            <label>Soal Uraian No. ${j}:</label>
+            <input type="text" id="soalUraian_${j}" value="${u.s}">
+            <label style="font-size:13px; margin-top:5px;">Kunci/Ekspektasi Jawaban Uraian:</label>
+            <textarea id="kunciUraian_${j}">${u.k}</textarea>
+        </div>
+    `;
+}
+
+function buatModulLengkap() {
+    // 1. Data Umum
+    document.getElementById('outJudulMapel').innerText = "MATA PELAJARAN: " + document.getElementById('mapel').value.toUpperCase();
+    document.getElementById('outGuru').innerText = document.getElementById('namaGuru').value;
+    document.getElementById('outTandaTangan').innerText = document.getElementById('namaGuru').value;
+    document.getElementById('outSekolah').innerText = document.getElementById('namaSekolah').value;
+    document.getElementById('outTahun').innerText = document.getElementById('tahunAjar').value;
+    document.getElementById('outFase').innerText = document.getElementById('faseKelas').value;
+    document.getElementById('outAlokasi').innerText = document.getElementById('alokasi').value;
     
-    // Gulir otomatis ke tampilan hasil
+    document.getElementById('outKompetensi').innerText = document.getElementById('kompetensiAwal').value;
+    document.getElementById('outP5').innerText = document.getElementById('p5Input').value;
+    document.getElementById('outSarpras').innerText = document.getElementById('sarpras').value;
+    document.getElementById('outTarget').innerText = document.getElementById('targetPeserta').value;
+    document.getElementById('outModel').innerText = document.getElementById('modelBelajar').value;
+    
+    document.getElementById('outTujuan').innerText = document.getElementById('tujuan').value;
+    document.getElementById('outBermakna').innerText = document.getElementById('bermakna').value;
+    document.getElementById('outPemantik').innerText = document.getElementById('pemantik').value;
+    document.getElementById('outKegiatan').innerText = document.getElementById('kegiatan').value;
+    document.getElementById('outGlosarium').innerText = document.getElementById('glosarium').value;
+    document.getElementById('outPustaka').innerText = document.getElementById('pustaka').value;
+
+    // 2. Render Lembar Soal PG (Tanpa Kunci untuk Siswa)
+    const outPG = document.getElementById('outPG');
+    outPG.innerHTML = "";
+    let teksKunciPG = "";
+    for(let i=1; i<=10; i++) {
+        outPG.innerHTML += `
+            <li class="soal-item">
+                <strong>${document.getElementById('soalPG_'+i).value}</strong>
+                <ul class="pilihan-opsi">
+                    <li>${document.getElementById('opsiA_'+i).value}</li>
+                    <li>${document.getElementById('opsiB_'+i).value}</li>
+                    <li>${document.getElementById('opsiC_'+i).value}</li>
+                    <li>${document.getElementById('opsiD_'+i).value}</li>
+                </ul>
+            </li>
+        `;
+        teksKunciPG += `<strong>${i}.</strong> ${document.getElementById('kunciPG_'+i).value} &nbsp;&nbsp;&nbsp;&nbsp;`;
+    }
+    // Cetak Rekap Kunci Jawaban PG untuk Guru
+    document.getElementById('outKunciPG').innerHTML = teksKunciPG + "<br><small style='color:#666;'>*Skor: Benar nilai 1, Salah nilai 0 (Total skor maksimal PG = 10)</small>";
+
+    // 3. Render Lembar Soal Uraian untuk Siswa
+    const outUraian = document.getElementById('outUraian');
+    const outKunciUraian = document.getElementById('outKunciUraian');
+    outUraian.innerHTML = "";
+    outKunciUraian.innerHTML = "";
+    
+    for(let j=1; j<=5; j++) {
+        outUraian.innerHTML += `
+            <li class="soal-item" style="margin-bottom:25px;">
+                <strong>${document.getElementById('soalUraian_'+j).value}</strong>
+                <div style="margin-top:35px; border-bottom:1px dashed #ccc; width:100%;"></div>
+            </li>
+        `;
+        
+        // Cetak Lembar Jawaban Uraian untuk Guru
+        outKunciUraian.innerHTML += `
+            <div class="kunci-box">
+                <strong>Soal No. ${j}:</strong> ${document.getElementById('soalUraian_'+j).value}<br>
+                <span style="color:#2f855a;"><strong>Kunci Balasan:</strong> ${document.getElementById('kunciUraian_'+j).value}</span><br>
+                <small style="color:#718096;"><em>Pedoman Rubrik: Skor 4 (Sangat Sempurna), Skor 2 (Kurang Lengkap), Skor 0 (Tidak Menjawab).</em></small>
+            </div>
+        `;
+    }
+
+    // Tampilkan output & gulir otomatis
+    document.getElementById('hasilBox').style.display = 'block';
     document.getElementById('hasilBox').scrollIntoView({ behavior: 'smooth' });
 }
 </script>
